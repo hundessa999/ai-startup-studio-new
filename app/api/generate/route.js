@@ -5,18 +5,19 @@ export async function POST(req) {
   try {
     const { prompt, apiKey } = await req.json()
 
-    const client = new OpenAI({
-      apiKey
-    })
+    const client = new OpenAI({ apiKey })
 
-    const completion = await client.chat.completions.create({
+    const response = await client.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }]
     })
 
-    return NextResponse.json({
-      text: completion.choices[0].message.content
-    })
+    const text =
+      response.choices?.[0]?.message?.content ??
+      ""
+console.log(response)
+
+    return NextResponse.json({ text })
   } catch (e) {
     return NextResponse.json(
       { error: e.message },
@@ -24,3 +25,4 @@ export async function POST(req) {
     )
   }
 }
+
